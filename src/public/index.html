@@ -8,28 +8,44 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/js/chat.js"></script>
+    <link rel="icon" href="/img/favicon.png">
+    <link rel="stylesheet" href="/css/styles.css">
     <title>Document</title>
 </head>
 <body>
-    <h1>Chat App</h1>
-    <br>
 
-    <div id="messages"></div>
-    
-    <form id="msgForm">
-        <input type="text" placeholder="Send Message..." id="msg">
-        <button type="button" id="btnSend">Send</button>
-    </form>
-    <button id="btnLocation">Send Location</button>
+    <div class="chat">
+        <div class="chat__sidebar"></div>
+        <div class="chat__main">
+            <h1>Chat App</h1>
+            <br>
+            <div id="messages" class="chat__messages"></div>
+            <div class="compose">
+                <form id="msgForm">
+                    <input type="text" placeholder="Send Message..." id="msg">
+                    <button type="button" id="btnSend">Send</button>
+                </form>
+                <button id="btnLocation">Send Location</button>
+            </div>
+        </div>
+    </div>
 
     <script id="message-template" type="text/html">
-        <div>
-            <p>{{createdAt}} - {{message}}</p>
+        <div class="message">
+            <p>
+                <span class="message__name">Some user name</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p>{{message}}</p>
         </div>
     </script>
     <script id="location-template" type="text/html">
-        <div>
-            <p>{{createdAt}} - <a href="{{location}}" target="_blank">My current location</a></p>
+        <div class="message">
+            <p>
+                <span class="message__name">Some user name</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><a href="{{location}}" target="_blank">My current location</a></p>
         </div>
     </script>
 </body>
