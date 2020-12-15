@@ -9,19 +9,21 @@ let messages = document.getElementById('messages')
 
 //Templates
 let messageTemplate = document.getElementById('message-template').innerHTML
+let locationTemplate = document.getElementById('location-template').innerHTML
 
 socket.on('message', (data) => {
-    console.log(data.msg)
+    console.log(data.text)
     const html = Mustache.render(messageTemplate, {
-        message : data.msg
+        message : data.text,
+        createdAt : moment(data.createdAt).format('h:mm A')
     })
     messages.insertAdjacentHTML('beforeend', html)
 })
 
 socket.on('locationMessage', (data) => {
-    console.log(data.msg)
-    const html = Mustache.render(messageTemplate, {
-        message : data.msg
+    const html = Mustache.render(locationTemplate, {
+        location : data.url,
+        createdAt :  moment(data.createdAt).format('h:mm A')
     })
     messages.insertAdjacentHTML('beforeend', html)
 })
@@ -32,7 +34,8 @@ btnSend.onclick = () => {
     inputMsg.value = ''
     inputMsg.focus()
     socket.emit('msgSent', {
-        msg: msg,
+        text: msg,
+        createdAt: new Date().getTime()
     }, (messgae) => {
         btnSend.removeAttribute('disabled')
         console.log('Message has been delivered!', messgae)

@@ -13,17 +13,23 @@
 <body>
     <h1>Chat App</h1>
     <br>
+
+    <div id="messages"></div>
+    
     <form id="msgForm">
         <input type="text" placeholder="Send Message..." id="msg">
         <button type="button" id="btnSend">Send</button>
     </form>
     <button id="btnLocation">Send Location</button>
 
-    <div id="messages"></div>
-
     <script id="message-template" type="text/html">
         <div>
-            <p>{{message}}</p>
+            <p>{{createdAt}} - {{message}}</p>
+        </div>
+    </script>
+    <script id="location-template" type="text/html">
+        <div>
+            <p>{{createdAt}} - <a href="{{location}}" target="_blank">My current location</a></p>
         </div>
     </script>
 </body>
