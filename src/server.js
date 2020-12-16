@@ -5,23 +5,36 @@ const server = http.createServer(app)
 const socket = require('socket.io')
 const io = socket(server)
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
+const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
 app.use('/', express.static(__dirname + '/public'))
-
-let count = 0
 
 io.on('connection', (socket) => {
     console.log('New Websocket connection with socket id', socket.id)
-    socket.emit('message', generateMessage('Welcome!'))
-    socket.broadcast.emit('message', generateMessage('A new user has joined'))
+    socket.on('join', (data, callback) => {
+        const { error, user } = addUser({ id: socket.id, username : data.username, room : data.room})
+        if(error) {
+            return callback(error)
+        }
+        socket.join(user.room)
+        socket.emit('message', generateMessage('Welcome!', 'Admin'))
+        socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined`, 'Admin'))
+        callback()
+    })
     socket.on('msgSent', (data, callback) => {
-        io.emit('message', data)
+        const user = getUser(socket.id)
+        data.username = user.username
+        io.to(user.room).emit('message', data)
         callback('Delivered!')
     })
     socket.on('disconnect', () => {
-        io.emit('message', generateMessage('A user has left'))
+        const user = removeUser(socket.id)
+        if(user) {
+            io.to(user.room).emit('message', generateMessage(`${user.username} has left`, 'Admin'))
+        }
     })
     socket.on('sendLocation', (data, callback) => {
-        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps/?q=${data.latitude},${data.longitude}`))
+        const user = getUser(socket.id)
+        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps/?q=${data.latitude},${data.longitude}`, user.username))
         callback()
     })
 })
