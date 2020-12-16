@@ -35,6 +35,9 @@ socket.on('locationMessage', (data) => {
 
 btnSend.onclick = () => {
     let msg = inputMsg.value
+    if(!msg) {
+        return
+    }
     btnSend.setAttribute('disabled', 'disabled')
     inputMsg.value = ''
     inputMsg.focus()

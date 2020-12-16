@@ -10,7 +10,7 @@
     <script defer src="/js/chat.js"></script>
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="/css/styles.css">
-    <title>Document</title>
+    <title>Chat-App</title>
 </head>
 <body>
 
@@ -21,9 +21,9 @@
             <br>
             <div id="messages" class="chat__messages"></div>
             <div class="compose">
-                <form id="msgForm">
-                    <input type="text" placeholder="Send Message..." id="msg">
-                    <button type="button" id="btnSend">Send</button>
+                <form id="message-form">
+                    <input type="text" placeholder="Send Message..." id="msg" name="message" required autocomplete="off">
+                    <button id="btnSend">Send</button>
                 </form>
                 <button id="btnLocation">Send Location</button>
             </div>
