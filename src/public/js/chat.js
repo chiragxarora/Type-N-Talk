@@ -6,10 +6,12 @@ let btnSend = document.getElementById('btnSend')
 let btnLocation = document.getElementById('btnLocation')
 let inputMsg = document.getElementById('msg')
 let messages = document.getElementById('messages')
+let sidebar = document.getElementById('sidebar')
 
 //Templates
 let messageTemplate = document.getElementById('message-template').innerHTML
 let locationTemplate = document.getElementById('location-template').innerHTML
+let sidebarTemplate = document.getElementById('sidebar-template').innerHTML
 
 //Options
 const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix : true})
@@ -33,6 +35,13 @@ socket.on('locationMessage', (data) => {
     messages.insertAdjacentHTML('beforeend', html)
 })
 
+socket.on('roomData', (data) => {
+    const html = Mustache.render(sidebarTemplate, {
+        users : data.users,
+        room : data.room
+    })
+    sidebar.innerHTML = html
+})
 btnSend.onclick = () => {
     let msg = inputMsg.value
     if(!msg) {

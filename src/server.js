@@ -18,6 +18,10 @@ io.on('connection', (socket) => {
         socket.join(user.room)
         socket.emit('message', generateMessage('Welcome!', 'Admin'))
         socket.broadcast.to(user.room).emit('message', generateMessage(`${user.username} has joined`, 'Admin'))
+        io.to(user.room).emit('roomData', {
+            room: user.room,
+            users: getUsersInRoom(user.room)
+        })
         callback()
     })
     socket.on('msgSent', (data, callback) => {
@@ -30,6 +34,10 @@ io.on('connection', (socket) => {
         const user = removeUser(socket.id)
         if(user) {
             io.to(user.room).emit('message', generateMessage(`${user.username} has left`, 'Admin'))
+            io.to(user.room).emit('roomData', {
+                room: user.room,
+                users: getUsersInRoom(user.room)
+            })
         }
     })
     socket.on('sendLocation', (data, callback) => {
