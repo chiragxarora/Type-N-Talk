@@ -7,6 +7,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="https://kit.fontawesome.com/58f22ec974.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/js/chat.js"></script>
     <link rel="icon" href="/img/favicon.png">
@@ -18,8 +20,7 @@
     <div class="chat">
         <div id="sidebar" class="chat__sidebar"></div>
         <div class="chat__main">
-            <h1 style="margin: 15px;">Let's Chat</h1>
-            <br>
+            <h1 style="margin-top: 15px; margin-left: 15px;">Let's Chat</h1>
             <div id="messages" class="chat__messages">
                 <div id="typing-status" style="position: absolute; bottom: 80px;"></div>
             </div>
@@ -28,13 +29,14 @@
                     <input type="text" id="msg" oninput="isTyping()" name="message" required placeholder="Send Message..." autocomplete="off">
                     <div class="image-upload">
                         <label for="image">
-                            <i class="fa fa-lg fa-upload"></i>
+                            <i style="transform: translateY(4px);" class="fa fa-lg fa-upload" id="upload-icon"></i>
                         </label>
                         <input name="image" type="file" id="image" accept="image/*" data-max-size="9000" onchange="uploadFile(this)">
                     </div>
-                    <button id="btnSend">Send</button>
+                    <button type="button" id="btnCamera"><i class="fa fa-lg fa-camera"></i></button>
+                    <button id="btnSend"><i class="fa fa-lg fa-paper-plane"></i></button>
                 </form>
-                <button id="btnLocation">Send Location</button>
+                <button id="btnLocation"><i class="fa fa-lg fa-map-marker-alt"></i></button>
             </div>
         </div>
     </div>
@@ -83,6 +85,20 @@
             <div><b>{{username}}</b></div>
             <div class="dot-typing" style="transform: translate(20px,5px);"></div>
         </div>
+    </script>
+    <script>
+        tippy('#upload-icon', {
+            content: "Upload Images!",
+        });
+        tippy('#btnCamera', {
+            content: "Click a live picture!",
+        });
+        tippy('#btnSend', {
+            content: "Send Message Now!",
+        });
+        tippy('#btnLocation', {
+            content: "Share your location!",
+        });
     </script>
 </body>
 </html>

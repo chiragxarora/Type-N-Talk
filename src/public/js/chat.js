@@ -3,6 +3,7 @@ let socket = io()
 //Elements
 let msgForm = document.getElementById('msgForm')
 let btnSend = document.getElementById('btnSend')
+let btnCamera = document.getElementById('btnCamera')
 let btnLocation = document.getElementById('btnLocation')
 let inputMsg = document.getElementById('msg')
 let messages = document.getElementById('messages')
@@ -151,6 +152,10 @@ btnSend.onclick = () => {
     })
 }
 
+btnCamera.onclick = () => {
+
+}
+
 btnLocation.onclick = () => {
     if(!navigator.geolocation) {
         return alert('Geolocation is not supported by your browser')
@@ -163,6 +168,9 @@ btnLocation.onclick = () => {
         }, (messgae) => {
             btnLocation.removeAttribute('disabled')
         })
+    }, null, {
+        enableHighAccuracy: true,
+        timeout: 5000
     })
 }
 

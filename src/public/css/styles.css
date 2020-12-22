@@ -37,7 +37,7 @@ input {
     outline: none;
 }
 
-button {
+button, #upload-icon {
     cursor: pointer;
     padding: 12px;
     background: #7C5CBF;
@@ -172,6 +172,10 @@ button:disabled {
     margin-right: 16px;
 }
 #image {
+    display: none;
+}
+
+video {
     display: none;
 }
 
