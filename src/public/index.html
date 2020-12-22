@@ -5,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="/css/styles.css">
+    <script defer src="./js/join.js"></script>
     <title>Chat-App</title>
 </head>
 <body>
     <div class="centered-form">
         <div class="centered-form__box">
             <h1>Join</h1>
-            <form action="/chat.html">
+            <form action="/chat">
                 <label>Display Name</label>
-                <input type="text" name="username" placeholder="Display Name" required>
+                <input type="text" name="username" placeholder="Display Name" required autocomplete="off">
                 <label>Room</label>
-                <input type="text" name="room" placeholder="Room" required>
+                <input type="text" name="room" placeholder="Room" id="inpJoinRoom" required autocomplete="off">
                 <button>Join</button>
+                <button id="btnJoinPublicRoom">Join Public Room</button>
             </form>
         </div>
     </div>

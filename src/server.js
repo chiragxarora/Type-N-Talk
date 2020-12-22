@@ -6,6 +6,8 @@ const socket = require('socket.io')
 const io = socket(server)
 const { generateMessage, generateLocationMessage } = require('./utils/messages')
 const { addUser, removeUser, getUser, getUsersInRoom } = require('./utils/users')
+app.use(express.urlencoded({extended: true}))
+
 app.use('/', express.static(__dirname + '/public'))
 
 io.on('connection', (socket) => {
@@ -24,11 +26,28 @@ io.on('connection', (socket) => {
         })
         callback()
     })
-    socket.on('msgSent', (data, callback) => {
+    socket.on('isTyping', (data) => {
+        const user = getUser(socket.id)
+        data.username = user.username
+        socket.broadcast.to(user.room).emit('isTyping', data)
+        
+    })
+    socket.on('sendMessage', (data, callback) => {
         const user = getUser(socket.id)
         data.username = user.username
         io.to(user.room).emit('message', data)
-        callback('Delivered!')
+        callback()
+    })
+    socket.on('sendImage', (data, callback) => {
+        const user = getUser(socket.id)
+        data.username = user.username
+        io.to(user.room).emit('imageMessage', data)
+        callback()
+    })
+    socket.on('sendLocation', (data, callback) => {
+        const user = getUser(socket.id)
+        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps/?q=${data.latitude},${data.longitude}`, user.username))
+        callback()
     })
     socket.on('disconnect', () => {
         const user = removeUser(socket.id)
@@ -39,11 +58,6 @@ io.on('connection', (socket) => {
                 users: getUsersInRoom(user.room)
             })
         }
-    })
-    socket.on('sendLocation', (data, callback) => {
-        const user = getUser(socket.id)
-        io.emit('locationMessage', generateLocationMessage(`https://google.com/maps/?q=${data.latitude},${data.longitude}`, user.username))
-        callback()
     })
 })
 server.listen(1111, () => {

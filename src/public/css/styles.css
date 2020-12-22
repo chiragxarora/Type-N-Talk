@@ -76,6 +76,7 @@ button:disabled {
 
 .centered-form button {
     width: 100%;
+    margin-bottom: 16px;
 }
 
 .centered-form input {
@@ -135,6 +136,10 @@ button:disabled {
 
 /* Message Composition Styles */
 
+.isTyping{
+    display: flex;
+}
+
 .compose {
     display: flex;
     flex-shrink: 0;
@@ -144,8 +149,10 @@ button:disabled {
 
 .compose form {
     display: flex;
+    
+    align-items: center;
+    justify-content: center;
     flex-grow: 1;
-    margin-right: 16px;
 }
 
 .compose input {
@@ -158,6 +165,14 @@ button:disabled {
 
 .compose button {
     font-size: 14px;
+    margin-right: 16px;
+}
+
+.image-upload {
+    margin-right: 16px;
+}
+#image {
+    display: none;
 }
 
 /* Chat Sidebar Styles */

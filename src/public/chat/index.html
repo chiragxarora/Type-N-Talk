@@ -6,23 +6,32 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
+    <script src="https://kit.fontawesome.com/58f22ec974.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/js/chat.js"></script>
     <link rel="icon" href="/img/favicon.png">
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/three-dots@0.2.0/dist/three-dots.min.css">
     <title>Chat-App</title>
 </head>
 <body>
-
     <div class="chat">
         <div id="sidebar" class="chat__sidebar"></div>
         <div class="chat__main">
-            <h1>Chat App</h1>
+            <h1 style="margin: 15px;">Let's Chat</h1>
             <br>
-            <div id="messages" class="chat__messages"></div>
+            <div id="messages" class="chat__messages">
+                <div id="typing-status" style="position: absolute; bottom: 80px;"></div>
+            </div>
             <div class="compose">
                 <form id="message-form">
-                    <input type="text" placeholder="Send Message..." id="msg" name="message" required autocomplete="off">
+                    <input type="text" id="msg" oninput="isTyping()" name="message" required placeholder="Send Message..." autocomplete="off">
+                    <div class="image-upload">
+                        <label for="image">
+                            <i class="fa fa-lg fa-upload"></i>
+                        </label>
+                        <input name="image" type="file" id="image" accept="image/*" data-max-size="9000" onchange="uploadFile(this)">
+                    </div>
                     <button id="btnSend">Send</button>
                 </form>
                 <button id="btnLocation">Send Location</button>
@@ -40,6 +49,7 @@
         </div>
     </script>
     <script id="location-template" type="text/html">
+        
         <div class="message">
             <p>
                 <span class="message__name">{{username}}</span>
@@ -48,14 +58,31 @@
             <p><a href="{{location}}" target="_blank">My current location</a></p>
         </div>
     </script>
+    <script id="image-template" type="text/html">
+        <div class="message">
+            <p>
+                <span class="message__name">{{username}}</span>
+                <span class="message__meta">{{createdAt}}</span>
+            </p>
+            <p><img src="{{src}}" alt="Image" width="250" height="250"></p>
+        </div>
+    </script>
     <script id="sidebar-template" type="text/html">
-        <h2 class="room-title">{{room}}</h2>
-        <h3 class="list-title">Users</h3>
+        <h2 class="room-title"><i class="fa fa-lg fa-house-user">&nbsp;</i><b><i>{{room}}</i></b></h2>
+        <br>
+        <h3 class="list-title"><i class="fa fa-lg fa-users fa-rotate">&nbsp;</i>Users</h3>
+        <br>
         <ol class="users">
             {{#users}}
-                <li>{{username}}</li>
+                <li><i class="fa fa fa-user">&nbsp;&nbsp;</i>{{username}}</li>
             {{/users}}
         </ol>
+    </script>
+    <script id="isTyping-template" type="text/html">
+        <div class="isTyping">
+            <div><b>{{username}}</b></div>
+            <div class="dot-typing" style="transform: translate(20px,5px);"></div>
+        </div>
     </script>
 </body>
 </html>
