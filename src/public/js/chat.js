@@ -8,16 +8,29 @@ let btnLocation = document.getElementById('btnLocation')
 let inputMsg = document.getElementById('msg')
 let messages = document.getElementById('messages')
 let sidebar = document.getElementById('sidebar')
+let sidebarToggleMenu = document.getElementById('sidebarToggleMenu')
 let typingStatus = document.getElementById('typing-status')
+let liveVideo = document.getElementById('liveVideo')
+let btnFlipCamera = document.getElementById('btnFlipCamera')
+let btnCapture = document.getElementById('btnCapture')
+let btnSendLivePhoto = document.getElementById('btnSendLivePhoto')
+let btnCancelCamera = document.getElementById('btnCancelCamera')
+let btnCloseModal = document.getElementById('btnCloseModal')
+let capturedPhoto = document.getElementById('capturedPhoto')
+let front = true
+let stream = null
+let constraintObj = { video: true };
 
 //Templates
 let isTypingTemplate = document.getElementById('isTyping-template').innerHTML
 let messageTemplate = document.getElementById('message-template').innerHTML
 let locationTemplate = document.getElementById('location-template').innerHTML
 let imageTemplate = document.getElementById('image-template').innerHTML
+let liveImageTemplate = document.getElementById('live-image-template').innerHTML
 let sidebarTemplate = document.getElementById('sidebar-template').innerHTML
 
 //Options
+
 const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix : true})
 
 const autoscroll = () => {
@@ -40,6 +53,26 @@ const autoscroll = () => {
 }
 
 let imageData
+
+const capture = () => {
+    constraintObj.video = { facingMode: front ? 'user' : 'environment' }
+    if(constraintObj.video.facingMode == "user") {
+        liveVideo.classList.add('flip')
+    }
+    
+    if(constraintObj.video.facingMode == "environment") {
+        liveVideo.classList.remove('flip')
+    }
+  navigator.mediaDevices.getUserMedia(constraintObj)
+    .then(function(_stream) {
+      stream  = _stream;
+      liveVideo.srcObject = stream;
+      liveVideo.play();
+    })
+    .catch(function(err) {
+      console.log(err)
+    });
+}
 
 const uploadFile = (imageTag) => {
     const file = imageTag.files[0]
@@ -72,9 +105,16 @@ const isTyping = () => {
     socket.emit('isTyping', {})
 }
 
+const stopStream = () => {
+    liveVideo.pause()
+    liveVideo.src = null
+    stream.getTracks()[0].stop()
+    capturedPhoto.src = ""
+}
+
 setInterval(() => {
     typingStatus.innerHTML = ""
-},1000)
+},3000)
 
 socket.on('isTyping', (data) => {
     const html = Mustache.render(isTypingTemplate, {
@@ -111,6 +151,20 @@ socket.on('imageMessage', (data) => {
     autoscroll()
 })
 
+socket.on('liveImageMessage', (data) => {
+    const html = Mustache.render(liveImageTemplate, {
+        username : data.username,
+        src : data.src,
+        createdAt :  moment(data.createdAt).format('h:mm A')
+    })
+    
+    if(!data.src) {
+        return
+    }
+    messages.insertAdjacentHTML('beforeend', html)
+    autoscroll()
+})
+
 socket.on('locationMessage', (data) => {
     const html = Mustache.render(locationTemplate, {
         username : data.username,
@@ -127,6 +181,7 @@ socket.on('roomData', (data) => {
         room : data.room.toUpperCase()
     })
     sidebar.innerHTML = html
+    sidebarToggleMenu.innerHTML = html
 })
 btnSend.onclick = () => {
     let msg = inputMsg.value
@@ -153,7 +208,54 @@ btnSend.onclick = () => {
 }
 
 btnCamera.onclick = () => {
+    capture()
+}
 
+btnFlipCamera.onclick = () => {
+    if( stream == null ) return
+    stream.getTracks().forEach(t => {
+      t.stop();
+    });
+    front = !front;
+    console.log(constraintObj)
+    capture();
+}
+
+let liveImageData
+
+btnCapture.onclick = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = liveVideo.videoWidth
+    canvas.height = liveVideo.videoHeight
+    let ctx = canvas.getContext('2d')
+    ctx.scale(-1,1)
+    console.log(canvas.width + " " + canvas.height)
+    if(canvas.width && canvas.height) {
+        ctx.drawImage(liveVideo, 0, 0, canvas.width*-1, canvas.height)
+        liveImageData = canvas.toDataURL('image/png')
+        capturedPhoto.setAttribute('src', liveImageData)
+    }
+}
+
+btnSendLivePhoto.onclick = () => {
+    console.log('here')
+    if(!liveImageData) return
+    console.log('hereee')
+    socket.emit('sendLiveImage', {
+        src: liveImageData,
+        createdAt: new Date().getTime()
+    }, () => {
+        liveImageData = null
+    })
+    stopStream()
+}
+
+btnCancelCamera.onclick = () => {
+    stopStream()
+}
+
+btnCloseModal.onclick = () => {
+    stopStream()
 }
 
 btnLocation.onclick = () => {

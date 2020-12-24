@@ -44,6 +44,12 @@ io.on('connection', (socket) => {
         io.to(user.room).emit('imageMessage', data)
         callback()
     })
+    socket.on('sendLiveImage', (data, callback) => {
+        const user = getUser(socket.id)
+        data.username = user.username
+        io.to(user.room).emit('liveImageMessage', data)
+        callback()
+    })
     socket.on('sendLocation', (data, callback) => {
         const user = getUser(socket.id)
         io.emit('locationMessage', generateLocationMessage(`https://google.com/maps/?q=${data.latitude},${data.longitude}`, user.username))

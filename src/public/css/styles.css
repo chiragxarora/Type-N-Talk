@@ -37,7 +37,7 @@ input {
     outline: none;
 }
 
-button, #upload-icon {
+button {
     cursor: pointer;
     padding: 12px;
     background: #7C5CBF;
@@ -45,6 +45,14 @@ button, #upload-icon {
     color: white;
     font-size: 16px;
     transition: background .3s ease;
+}
+
+#upload-icon {
+    padding: 12px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
 }
 
 button:hover {
@@ -104,7 +112,7 @@ button:disabled {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    max-height: 100vh;
+    height: 100vh;
 }
 
 .chat__messages {
@@ -171,12 +179,10 @@ button:disabled {
 .image-upload {
     margin-right: 16px;
 }
-#image {
-    display: none;
-}
 
-video {
-    display: none;
+.flip {
+    -webkit-transform: scaleX(-1);
+    transform: scaleX(-1);
 }
 
 /* Chat Sidebar Styles */
@@ -199,4 +205,22 @@ video {
     list-style-type: none;
     font-weight: 300;
     padding: 12px 24px 0 24px;
+}
+
+@media only screen and (min-width: 851px) {
+    #toggle-sidebar{
+        display: none;
+    }
+    #sidebar{
+        display: block;
+    }
+}
+
+@media only screen and (max-width: 850px) {
+    #toggle-sidebar{
+        display: block;
+    }
+    #sidebar{
+        display: none;
+    }
 }
