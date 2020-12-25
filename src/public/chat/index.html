@@ -12,7 +12,7 @@
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/js/chat.js"></script>
-    <link rel="icon" href="/img/favicon.png">
+    <link rel="icon" href="../img/Type N Talk Logo.png">
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/three-dots@0.2.0/dist/three-dots.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -35,18 +35,18 @@
         <br>
         <div id="sidebar" class="chat__sidebar" style="width: 25%;"></div>
         <div class="chat__main" id="chat__main" style="width: 75%;">
-            <h1 style="margin-top: 15px; margin-left: 15px; margin-bottom: 10px; padding: 10px; color: red; font-size: 40px;"><b>!Type N Talk!</b></h1>
-            <div style="transform: translate(85%,-100%);" class="ui toggle checkbox">
+            <img style="margin-left: 50px; margin-top: 30px;" src="../img/Type N Talk Logo.png" alt="Logo" width="130px">
+            <div style="transform: translate(85%,-170%);" class="ui toggle checkbox">
                 <input type="checkbox" name="public">
                 <label></label>
               </div>
-            <div id="messages" class="chat__messages" style="margin-top: 10px;">
+            <div id="messages" class="chat__messages" style="margin-top: 0px;">
                 <div id="typing-status" style="position: absolute; bottom: 80px;"></div>
             </div>
-            <div class="compose row justify-content-center">
+            <div class="compose row align-items-center justify-content-center">
                 <input class="col-12 col-md-8" type="text" id="msg" oninput="isTyping()" name="message" required placeholder="Send Message..." autocomplete="off">    
                 <input type="file" id="image" accept="image/*" style="display: none;" onchange="uploadFile(this)">
-                <div class=" col-12 col-md-4 row mt-3">
+                <div class=" col-12 col-md-4 row align-items-center mt-md-0 mt-3">
                     <button class="image-upload btn btn-primary col mr-1" id="btnUploadFile"><i class="fa fa-lg fa-upload "></i></button>
                     <button type="button" id="btnCamera" class="btn btn-primary col mr-1" data-toggle="modal" data-target="#exampleModalCenter" onclick="capture()"><i class="fa fa-lg fa-camera" ></i></button>
                     <button id="btnSend" class="btn btn-primary col mr-1" onclick="sendMessage()"><i class="fa fa-lg fa-paper-plane"></i></button>
