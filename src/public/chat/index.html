@@ -3,20 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
-    <script src="https://kit.fontawesome.com/58f22ec974.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script defer src="/js/chat.js"></script>
+    <!-- Favicon -->
     <link rel="icon" href="../img/Type N Talk Logo.png">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/three-dots@0.2.0/dist/three-dots.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- CSS libraries -->
+    <link rel="stylesheet" href="../css/libraries/three-dots.min.css">
+    <link rel="stylesheet" href="../css/libraries/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <title>Chat-App</title>
 </head>
 <body>
@@ -133,6 +126,18 @@
         </div>
     </script>
 
+    <!-- Libraries -->
+
+    <script src="../js/libraries/mustache.min.js"></script>
+    <script src="../js/libraries/moment.min.js"></script>
+    <script src="../js/libraries/qs.js"></script>
+    <script src="../js/libraries/jquery.min.js"></script>
+    <script src="../js/libraries/bootstrap.min.js"></script>
+    <script src="https://kit.fontawesome.com/58f22ec974.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
+
     <!-- Helper Scripts -->
 
     <script>
@@ -159,8 +164,7 @@
     onUnchecked: function() {
         disableDarkMode()
     }
-  })
-;
+    })
     </script>
 </body>
 </html>
