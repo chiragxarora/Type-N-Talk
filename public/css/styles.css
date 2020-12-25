@@ -240,3 +240,17 @@ button:disabled {
         width: 180px;   
     }
 }
+
+@media only screen and (min-width: 768px) {
+    #typing-status{
+        position: absolute;
+        bottom: 80px;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    #typing-status{
+        position: absolute;
+        bottom: 115px;
+    }   
+}
