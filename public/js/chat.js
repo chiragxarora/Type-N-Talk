@@ -209,6 +209,9 @@ const enableDarkMode = () => {
     let content = document.getElementById('chat__main')
     let sideContent = document.getElementById('toggle-sidebar')
     content.style.backgroundColor = '#010409'
+    document.getElementById('toggle').style.backgroundColor = '#010409'
+    document.getElementById('toggleIcon').style.backgroundColor = '#010409'
+    document.getElementById('pusher').style.backgroundColor = '#010409'
     sideContent.style.backgroundColor = '#010409'
     content.style.color = 'white'
 }
@@ -217,6 +220,9 @@ const disableDarkMode = () => {
     let content = document.getElementById('chat__main')
     let sideContent = document.getElementById('toggle-sidebar')
     sideContent.style.backgroundColor = 'white'
+    document.getElementById('toggle').style.backgroundColor = 'white'
+    document.getElementById('toggleIcon').style.backgroundColor = 'white'
+    document.getElementById('pusher').style.backgroundColor = 'white'
     content.style.backgroundColor = 'white'
     content.style.color = '#010409'
 }

@@ -12,24 +12,23 @@
     <link rel="stylesheet" href="/css/styles.css">
     <title>Chat-App</title>
 </head>
-<body>
-    <div class="chat">
+<body class="pushable">
+    <div id="sidebarToggleMenu" class="ui inverted sidebar vertical menu chat__sidebar" style="height: 100%;">
+    </div>
+    <div class="pusher chat" id="pusher">
         <div id="toggle-sidebar" style="margin: 0px;" class="row">
             <div class="sixteen wide column">
-                <div id="sidebarToggleMenu" class="ui inverted sidebar vertical menu chat__sidebar" style="height: 100%;">
-                </div>
-                <div class="ui basic icon menu">
+                <div id="toggleIcon" class="ui basic icon menu">
                     <div id="toggle" class="item">
                         <i class="sidebar red icon"></i>
                     </div>
                 </div>
             </div>
         </div>
-        <br>
         <div id="sidebar" class="chat__sidebar pusher" style="width: 25%;"></div>
         <div class="chat__main" id="chat__main" style="width: 75%;">
             <img style="margin-left: 50px; margin-top: 30px;" src="../img/Type N Talk Logo.png" alt="Logo" width="130px">
-            <div style="transform: translate(85%,-170%);" class="ui toggle checkbox">
+            <div style="transform: translate(75%,-170%);" class="ui toggle checkbox">
                 <input type="checkbox" name="public">
                 <label></label>
               </div>
