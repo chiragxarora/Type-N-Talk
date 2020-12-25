@@ -8,11 +8,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="https://kit.fontawesome.com/58f22ec974.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script defer src="/js/chat.js"></script>
     <link rel="icon" href="/img/favicon.png">
@@ -24,45 +21,52 @@
 </head>
 <body>
     <div class="chat">
-        <div id="toggle-sidebar" style="margin: 10px;" class="row">
+        <div id="toggle-sidebar" style="margin: 0px;" class="row">
             <div class="sixteen wide column">
                 <div id="sidebarToggleMenu" class="ui inverted sidebar vertical menu chat__sidebar" style="height: 100%;">
                 </div>
                 <div class="ui basic icon menu">
                     <div id="toggle" class="item">
-                        <i class="sidebar icon"></i>
+                        <i class="sidebar red icon"></i>
                     </div>
                 </div>
             </div>
         </div>
         <br>
         <div id="sidebar" class="chat__sidebar" style="width: 25%;"></div>
-        <div class="chat__main" style="width: 75%;">
-            <h1 style="margin-top: 15px; margin-left: 15px; margin-bottom: 15px;">Let's Chat</h1>
-            <div id="messages" class="chat__messages" style="margin-top: 15px;">
+        <div class="chat__main" id="chat__main" style="width: 75%;">
+            <h1 style="margin-top: 15px; margin-left: 15px; margin-bottom: 10px; padding: 10px; color: red; font-size: 40px;"><b>!Type N Talk!</b></h1>
+            <div style="transform: translate(85%,-100%);" class="ui toggle checkbox">
+                <input type="checkbox" name="public">
+                <label></label>
+              </div>
+            <div id="messages" class="chat__messages" style="margin-top: 10px;">
                 <div id="typing-status" style="position: absolute; bottom: 80px;"></div>
             </div>
-            <div class="compose">
-                <input type="text" id="msg" oninput="isTyping()" name="message" required placeholder="Send Message..." autocomplete="off">    
+            <div class="compose row justify-content-center">
+                <input class="col-12 col-md-8" type="text" id="msg" oninput="isTyping()" name="message" required placeholder="Send Message..." autocomplete="off">    
                 <input type="file" id="image" accept="image/*" style="display: none;" onchange="uploadFile(this)">
-                <button class="image-upload btn btn-primary" id="btnUploadFile"><i class="fa fa-lg fa-upload "></i></button>
-                <button type="button" id="btnCamera" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"><i class="fa fa-lg fa-camera" ></i></button>
-                <button id="btnSend" class="btn btn-primary"><i class="fa fa-lg fa-paper-plane"></i></button>
-                <button id="btnLocation" class="btn btn-primary"><i class="fa fa-lg fa-map-marker-alt"></i></button>
+                <div class=" col-12 col-md-4 row mt-3">
+                    <button class="image-upload btn btn-primary col mr-1" id="btnUploadFile"><i class="fa fa-lg fa-upload "></i></button>
+                    <button type="button" id="btnCamera" class="btn btn-primary col mr-1" data-toggle="modal" data-target="#exampleModalCenter" onclick="capture()"><i class="fa fa-lg fa-camera" ></i></button>
+                    <button id="btnSend" class="btn btn-primary col mr-1" onclick="sendMessage()"><i class="fa fa-lg fa-paper-plane"></i></button>
+                    <button id="btnLocation" class="btn btn-primary col mr-1" onclick="sendLocation()"><i class="fa fa-lg fa-map-marker-alt"></i></button>    
+                </div>
             </div>
         </div>
     </div>
     
     <!-- Modal -->
-    <div class="ui modal small centered" style="height: auto; top: auto; left: auto; right: auto; bottom: auto;">
-        <i id="btnCloseModal" class="close icon"></i>
+
+    <div class="ui modal small" style="height: auto; top: auto; left: auto; right: auto; bottom: auto;">
+        <i id="btnCloseModal" class="close icon" onclick="stopStream()"></i>
         <div class="header">
           <h4>Click a Picture Now!</h4>
         </div>
         <div class="content">
             <div class="container">
                 <div class="row justify-content-center m-2">
-                    <video id="liveVideo" width="300" controls></video>
+                    <video id="liveVideo" width="300"></video>
                 </div>
                 <div class="row justify-content-center m-2">
                     <img id="capturedPhoto" alt="Captured Photo" width="300">
@@ -73,17 +77,20 @@
             </div>
         </div>
         <div class="actions row">
-          <div id="btnCancelCamera" class="col ui cancel button red"><i class="fa fa-lg fa-times"></i></div>
-          <div id="btnFlipCamera" class="col ui button yellow"><i class="fa fa-lg fa-sync-alt"></i></div>
-          <div id="btnCapture" class="col ui button green"><i class="fa fa-lg fa-camera-retro"></i></div>
-          <div id="btnSendLivePhoto" class="col ui approve button blue"><i class="fa fa-lg fa-paper-plane"></i></div>
+          <div id="btnCancelCamera" class="col ui cancel button red" onclick="stopStream()"><i class="fa fa-lg fa-times"></i></div>
+          <div id="btnFlipCamera" class="col ui button yellow" onclick="flipCamera()"><i class="fa fa-lg fa-sync-alt"></i></div>
+          <div id="btnCapture" class="col ui button green" onclick="captureLivePhoto()"><i class="fa fa-lg fa-camera-retro"></i></div>
+          <div id="btnSendLivePhoto" class="col ui approve button blue" onclick="sendLivePhoto()"><i class="fa fa-lg fa-paper-plane"></i></div>
         </div>
-      </div>
+    </div>
+
+    <!-- Templates -->
+    
     <script id="message-template" type="text/html">
         <div class="message">
             <span class="message__name"><strong><b>{{username}}</b></strong></span>
             <span class="message__meta">{{createdAt}}</span>    
-            <p>{{message}}</p>
+            <p style="font-size: 16px; margin-top: 5px">{{message}}</p>
         </div>
     </script>
     <script id="location-template" type="text/html">
@@ -109,13 +116,13 @@
         </div>
     </script>
     <script id="sidebar-template" type="text/html">
-        <h2 class="room-title"><i class="fa fa-lg fa-house-user">&nbsp;</i><b><i>{{room}}</i></b></h2>
-        <br>
+        <h2 class="room-title"><i class="fa fa-lg fa-house-user">&nbsp;</i><b><i>{{room}}</i></b></h2>   
         <h3 class="list-title"><i class="fa fa-lg fa-users fa-rotate">&nbsp;</i>Users</h3>
         <br>
         <ol class="users">
             {{#users}}
                 <li><i class="fa fa fa-user">&nbsp;&nbsp;</i>{{username}}</li>
+                <br>
             {{/users}}
         </ol>
     </script>
@@ -125,27 +132,15 @@
             <div class="dot-typing" style="transform: translate(20px,5px);"></div>
         </div>
     </script>
+
+    <!-- Helper Scripts -->
+
     <script>
-        tippy('#upload-icon', {
-            content: "Upload Images!",
-        });
-        tippy('#btnCamera', {
-            content: "Click a live picture!",
-        });
-        tippy('#btnSend', {
-            content: "Send Message Now!",
-        });
-        tippy('#btnLocation', {
-            content: "Share your location!",
+        $("#btnUploadFile").on("click", function() {
+          $("#image").trigger("click");
         });
     </script>
     <script>
-        $("#btnUploadFile").on("click", function() {
-            console.log('hereee')
-          $("#image").trigger("click");
-        });
-      </script>
-      <script>
         $('#toggle').click(() => {
             $('.ui.sidebar').sidebar('toggle')
         })
@@ -154,6 +149,18 @@
             .modal('setting', 'closable', false)
             .modal('show')
         })
+    </script>
+    <script>
+        $('.toggle.checkbox')
+        .checkbox({
+    onChecked: function() {
+        enableDarkMode()
+    },
+    onUnchecked: function() {
+        disableDarkMode()
+    }
+  })
+;
     </script>
 </body>
 </html>

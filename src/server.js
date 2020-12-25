@@ -11,7 +11,6 @@ app.use(express.urlencoded({extended: true}))
 app.use('/', express.static(__dirname + '/public'))
 
 io.on('connection', (socket) => {
-    console.log('New Websocket connection with socket id', socket.id)
     socket.on('join', (data, callback) => {
         const { error, user } = addUser({ id: socket.id, username : data.username, room : data.room})
         if(error) {

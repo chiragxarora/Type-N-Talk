@@ -1,6 +1,7 @@
 let socket = io()
 
 //Elements
+
 let msgForm = document.getElementById('msgForm')
 let btnSend = document.getElementById('btnSend')
 let btnCamera = document.getElementById('btnCamera')
@@ -22,6 +23,7 @@ let stream = null
 let constraintObj = { video: true };
 
 //Templates
+
 let isTypingTemplate = document.getElementById('isTyping-template').innerHTML
 let messageTemplate = document.getElementById('message-template').innerHTML
 let locationTemplate = document.getElementById('location-template').innerHTML
@@ -33,26 +35,12 @@ let sidebarTemplate = document.getElementById('sidebar-template').innerHTML
 
 const { username, room } = Qs.parse(location.search, {ignoreQueryPrefix : true})
 
-const autoscroll = () => {
-    // new message element
-    let newMessage = messages.lastElementChild
-    // height of new message
-    let newMessageStyles = getComputedStyle(newMessage)
-    let newMessageMargin = parseInt(newMessageStyles.marginBottom)
-    let newMessageHeight = newMessage.offsetHeight + newMessageMargin
-    // visible height
-    let visibleHeight = messages.offsetHeight
-    // height of messages container
-    let containerHeight = messages.scrollHeight
-    // how far have I scrolled
-    let scrollOffset = messages.scrollTop + visibleHeight
-
-    if(containerHeight - newMessageHeight <= scrollOffset) {
-        messages.scrollTop = messages.scrollHeight
-    }
-}
+// Variables
 
 let imageData
+let liveImageData
+
+// Functions
 
 const capture = () => {
     constraintObj.video = { facingMode: front ? 'user' : 'environment' }
@@ -115,6 +103,134 @@ const stopStream = () => {
 setInterval(() => {
     typingStatus.innerHTML = ""
 },3000)
+
+const sendMessage = () => {
+    let msg = inputMsg.value
+    if(!msg && !imageData) {
+        return
+    }
+        
+    socket.emit('sendImage', {
+        src: imageData,
+        createdAt: new Date().getTime()
+    }, () => {
+        imageData = null
+    })
+
+    btnSend.setAttribute('disabled', 'disabled')
+    inputMsg.value = ''
+    inputMsg.focus()
+    socket.emit('sendMessage', {
+        text: msg,
+        createdAt: new Date().getTime()
+    }, () => {
+        btnSend.removeAttribute('disabled')
+    })
+}
+
+$('#msg').keypress((e) => {
+    if(e.which == 13) {
+        sendMessage();
+    }
+})
+
+const flipCamera = () => {
+    if( stream == null ) return
+    stream.getTracks().forEach(t => {
+      t.stop();
+    });
+    front = !front;
+    capture();
+}
+
+const captureLivePhoto = () => {
+    const canvas = document.createElement('canvas')
+    canvas.width = liveVideo.videoWidth
+    canvas.height = liveVideo.videoHeight
+    let ctx = canvas.getContext('2d')
+    ctx.scale(-1,1)
+    console.log(canvas.width + " " + canvas.height)
+    if(canvas.width && canvas.height) {
+        ctx.drawImage(liveVideo, 0, 0, canvas.width*-1, canvas.height)
+        liveImageData = canvas.toDataURL('image/png')
+        capturedPhoto.setAttribute('src', liveImageData)
+    }
+}
+
+const sendLivePhoto = () => {
+    if(!liveImageData) return
+    socket.emit('sendLiveImage', {
+        src: liveImageData,
+        createdAt: new Date().getTime()
+    }, () => {
+        liveImageData = null
+    })
+    stopStream()
+}
+
+const sendLocation = () => {
+    if(!navigator.geolocation) {
+        return alert('Geolocation is not supported by your browser')
+    }
+    btnLocation.setAttribute('disabled', 'disabled')
+    navigator.geolocation.getCurrentPosition((position) => {
+        socket.emit('sendLocation', {
+            latitude : position.coords.latitude,
+            longitude : position.coords.longitude
+        }, (messgae) => {
+            btnLocation.removeAttribute('disabled')
+        })
+    }, null, {
+        enableHighAccuracy: true,
+        timeout: 5000
+    })
+}
+
+const autoscroll = () => {
+    // new message element
+    let newMessage = messages.lastElementChild
+    // height of new message
+    let newMessageStyles = getComputedStyle(newMessage)
+    let newMessageMargin = parseInt(newMessageStyles.marginBottom)
+    let newMessageHeight = newMessage.offsetHeight + newMessageMargin
+    // visible height
+    let visibleHeight = messages.offsetHeight
+    // height of messages container
+    let containerHeight = messages.scrollHeight
+    // how far have I scrolled
+    let scrollOffset = messages.scrollTop + visibleHeight
+
+    if(containerHeight - newMessageHeight <= scrollOffset) {
+        messages.scrollTop = messages.scrollHeight
+    }
+}
+
+const enableDarkMode = () => {
+    let content = document.getElementById('chat__main')
+    let sideContent = document.getElementById('toggle-sidebar')
+    content.style.backgroundColor = '#010409'
+    sideContent.style.backgroundColor = '#010409'
+    content.style.color = 'white'
+}
+
+const disableDarkMode = () => {
+    let content = document.getElementById('chat__main')
+    let sideContent = document.getElementById('toggle-sidebar')
+    sideContent.style.backgroundColor = 'white'
+    content.style.backgroundColor = 'white'
+    content.style.color = '#010409'
+}
+
+// Socket Events
+
+socket.emit('join', {
+    username, room
+}, (error) => {
+    if(error) {
+        alert(error)
+        location.href = '/'
+    }
+})
 
 socket.on('isTyping', (data) => {
     const html = Mustache.render(isTypingTemplate, {
@@ -182,105 +298,4 @@ socket.on('roomData', (data) => {
     })
     sidebar.innerHTML = html
     sidebarToggleMenu.innerHTML = html
-})
-btnSend.onclick = () => {
-    let msg = inputMsg.value
-    if(!msg && !imageData) {
-        return
-    }
-        
-    socket.emit('sendImage', {
-        src: imageData,
-        createdAt: new Date().getTime()
-    }, () => {
-        imageData = null
-    })
-
-    btnSend.setAttribute('disabled', 'disabled')
-    inputMsg.value = ''
-    inputMsg.focus()
-    socket.emit('sendMessage', {
-        text: msg,
-        createdAt: new Date().getTime()
-    }, () => {
-        btnSend.removeAttribute('disabled')
-    })
-}
-
-btnCamera.onclick = () => {
-    capture()
-}
-
-btnFlipCamera.onclick = () => {
-    if( stream == null ) return
-    stream.getTracks().forEach(t => {
-      t.stop();
-    });
-    front = !front;
-    console.log(constraintObj)
-    capture();
-}
-
-let liveImageData
-
-btnCapture.onclick = () => {
-    const canvas = document.createElement('canvas')
-    canvas.width = liveVideo.videoWidth
-    canvas.height = liveVideo.videoHeight
-    let ctx = canvas.getContext('2d')
-    ctx.scale(-1,1)
-    console.log(canvas.width + " " + canvas.height)
-    if(canvas.width && canvas.height) {
-        ctx.drawImage(liveVideo, 0, 0, canvas.width*-1, canvas.height)
-        liveImageData = canvas.toDataURL('image/png')
-        capturedPhoto.setAttribute('src', liveImageData)
-    }
-}
-
-btnSendLivePhoto.onclick = () => {
-    console.log('here')
-    if(!liveImageData) return
-    console.log('hereee')
-    socket.emit('sendLiveImage', {
-        src: liveImageData,
-        createdAt: new Date().getTime()
-    }, () => {
-        liveImageData = null
-    })
-    stopStream()
-}
-
-btnCancelCamera.onclick = () => {
-    stopStream()
-}
-
-btnCloseModal.onclick = () => {
-    stopStream()
-}
-
-btnLocation.onclick = () => {
-    if(!navigator.geolocation) {
-        return alert('Geolocation is not supported by your browser')
-    }
-    btnLocation.setAttribute('disabled', 'disabled')
-    navigator.geolocation.getCurrentPosition((position) => {
-        socket.emit('sendLocation', {
-            latitude : position.coords.latitude,
-            longitude : position.coords.longitude
-        }, (messgae) => {
-            btnLocation.removeAttribute('disabled')
-        })
-    }, null, {
-        enableHighAccuracy: true,
-        timeout: 5000
-    })
-}
-
-socket.emit('join', {
-    username, room
-}, (error) => {
-    if(error) {
-        alert(error)
-        location.href = '/'
-    }
 })
