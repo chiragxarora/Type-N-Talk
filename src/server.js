@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const SERVER_PORT = process.env.PORT || 1111
 const http=  require('http')
 const server = http.createServer(app)
 const socket = require('socket.io')
@@ -65,6 +66,6 @@ io.on('connection', (socket) => {
         }
     })
 })
-server.listen(1111, () => {
-    console.log('server started at http://localhost:1111')
+server.listen(SERVER_PORT, () => {
+    console.log('server started')
 })
