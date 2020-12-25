@@ -218,6 +218,12 @@ button:disabled {
     #sidebar{
         display: block;
     }
+    #capturedPhoto{
+        width: 300px;   
+    }
+    #liveVideo{
+        width: 300px;   
+    }
 }
 
 @media only screen and (max-width: 905px) {
@@ -226,5 +232,11 @@ button:disabled {
     }
     #sidebar{
         display: none;
+    }
+    #capturedPhoto{
+        width: 180px;   
+    }
+    #liveVideo{
+        width: 180px;   
     }
 }
